@@ -1,1 +1,8 @@
-alfie\motorphcp2\MotorPHCP2.class
+alfie\motorphcp2\Main.class
+alfie\motorphcp2\view\FooterPanel.class
+alfie\motorphcp2\model\User.class
+alfie\motorphcp2\controller\LoginController.class
+alfie\motorphcp2\view\LoginForm.class
+alfie\motorphcp2\view\ContentPanel.class
+alfie\motorphcp2\view\MainFrame.class
+alfie\motorphcp2\view\HeaderPanel.class
