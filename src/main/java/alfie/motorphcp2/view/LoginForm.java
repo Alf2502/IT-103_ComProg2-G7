@@ -4,13 +4,16 @@
  */
 package alfie.motorphcp2.view;
 
+import alfie.motorphcp2.controller.UserService;
+import alfie.motorphcp2.model.User;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginForm extends JDialog {
     public LoginForm(MainFrame mainFrame) {
         super(mainFrame, "Login", true);
-        setSize(300, 150);
+        setSize(300, 180);
         setLocationRelativeTo(mainFrame);
 
         JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
@@ -25,11 +28,14 @@ public class LoginForm extends JDialog {
         JButton loginBtn = new JButton("Login");
         loginBtn.addActionListener(e -> {
             String username = userField.getText().trim();
-            if (!username.isEmpty()) {
-                mainFrame.login(new alfie.motorphcp2.model.User(username));
+            String password = new String(passField.getPassword());
+
+            User user = UserService.authenticate(username, password);
+            if (user != null) {
+                mainFrame.login(user);
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Invalid input.");
+                JOptionPane.showMessageDialog(this, "Invalid username or password.");
             }
         });
 
@@ -38,4 +44,3 @@ public class LoginForm extends JDialog {
         setVisible(true);
     }
 }
-
