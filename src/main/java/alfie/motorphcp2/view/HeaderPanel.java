@@ -19,15 +19,26 @@ public final class HeaderPanel extends JPanel {
         this.mainFrame = mainFrame;
 
         setBackground(new Color(3, 182, 252));
-        setPreferredSize(new Dimension(0, 40));
-        setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        setPreferredSize(new Dimension(0, 30));
+        setLayout(new BorderLayout(5, 5)); // Proper layout for left/right alignment
 
+        // Left-aligned welcome label
         headerLabel = new JLabel();
         headerLabel.setForeground(Color.WHITE);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        add(headerLabel);
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // top, left, bottom, right
+        add(headerLabel, BorderLayout.WEST);
 
+        // Right-aligned login/logout button
         loginButton = new JButton("Log In");
+        loginButton.setFocusPainted(false);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 2));
+        rightPanel.setOpaque(false); // transparent to show header background
+        rightPanel.add(loginButton);
+        add(rightPanel, BorderLayout.EAST);
+
         loginButton.addActionListener(e -> {
             if (mainFrame.getCurrentUser() == null) {
                 LoginController.login(mainFrame);
@@ -42,8 +53,7 @@ public final class HeaderPanel extends JPanel {
             }
         });
 
-        add(loginButton);
-        updateUser(null);
+        updateUser(null); // Initial state
     }
 
     public void updateUser(User user) {
@@ -56,4 +66,3 @@ public final class HeaderPanel extends JPanel {
         }
     }
 }
-
