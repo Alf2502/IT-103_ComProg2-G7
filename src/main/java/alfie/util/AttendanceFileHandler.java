@@ -17,16 +17,15 @@ import java.util.*;
 
 public class AttendanceFileHandler {
 
-    // Fields
+    // Field for file path
     private final String csvFilePath;
 
-    // Constructor
-    public AttendanceFileHandler(String csvFilePath) {   // Pass the file path when creating the object
-        this.csvFilePath = csvFilePath;                 // Note:
-                                                        // Use -> AttendanceFileHandler handler = new AttendanceFileHandler("MotorPH_Attendance_Record.csv");
+    // Constructor using FilePathManager
+    public AttendanceFileHandler() {
+        this.csvFilePath = FilePathManager.getInstance().getAttendanceFilePath();
     }
 
-    // Method to read all records 
+    // Method to read all attendance records
     public List<AttendanceRecord> readAllRecords() {
         List<AttendanceRecord> records = new ArrayList<>();
 
@@ -48,14 +47,14 @@ public class AttendanceFileHandler {
                     records.add(record);
                 }
             }
-        } catch (IOException e) { // File error handler
+        } catch (IOException e) {
             System.err.println("Error reading attendance file: " + e.getMessage());
         }
 
         return records;
     }
 
-    // Method for getting the employee records
+    // Method to filter by employee number and month
     public List<AttendanceRecord> getRecordsForEmployee(String empNumber, String month) {
         List<AttendanceRecord> allRecords = readAllRecords();
         List<AttendanceRecord> filtered = new ArrayList<>();

@@ -12,7 +12,7 @@ import javax.swing.*;
  */
 
 import alfie.view.MainMenu;                 // Import the custom GUI class
-import alfie.util.FilePathManager;         // Import your centralized file path manager
+import alfie.util.FilePathManager;         // Import centralized file path manager
 
 /**
  * Entry point of the MotorPHCP2 application.
@@ -27,10 +27,10 @@ public class Main {
          */
         SwingUtilities.invokeLater(() -> {
 
-            // ✅ Initialize FilePathManager ONCE before any other file operation occurs
+            //  Initialize FilePathManager ONCE before any other file operation occurs
             new FilePathManager("C:/Users/Alfie/Documents/NetBeansProjects/MotorPHCP2");
 
-            // ✅ Create and show the main window
+            //  Create and show the main window
             MainMenu mainMenu = new MainMenu();
             mainMenu.setVisible(true);
         });

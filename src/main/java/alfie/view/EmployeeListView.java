@@ -7,8 +7,6 @@ package alfie.view;
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 import alfie.util.AttendanceFileHandler;
-import alfie.util.FilePathManager;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -120,9 +118,7 @@ public class EmployeeListView extends JDialog {
         }
 
         if (selectedEmp != null) {
-            AttendanceFileHandler handler = new AttendanceFileHandler(
-                FilePathManager.getInstance().getAttendanceFilePath()
-            );
+            AttendanceFileHandler handler = new AttendanceFileHandler();
 
             EmployeeDetailView dialog = new EmployeeDetailView(
                 (JFrame) SwingUtilities.getWindowAncestor(this),
