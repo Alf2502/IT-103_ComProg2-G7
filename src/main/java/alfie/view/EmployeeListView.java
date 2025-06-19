@@ -7,6 +7,7 @@ package alfie.view;
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 import alfie.util.AttendanceFileHandler;
+import alfie.util.FilePathManager;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -120,7 +121,7 @@ public class EmployeeListView extends JDialog {
 
         if (selectedEmp != null) {
             AttendanceFileHandler handler = new AttendanceFileHandler(
-                "C:\\Users\\Alfie\\Documents\\NetBeansProjects\\MotorPHCP2\\MotorPH_Attendance_Record.csv"
+                FilePathManager.getInstance().getAttendanceFilePath()
             );
 
             EmployeeDetailView dialog = new EmployeeDetailView(
@@ -133,6 +134,7 @@ public class EmployeeListView extends JDialog {
             JOptionPane.showMessageDialog(this, "Employee details not found.");
         }
     }
+
 
     private void loadEmployeeData() {
         tableModel.setRowCount(0);

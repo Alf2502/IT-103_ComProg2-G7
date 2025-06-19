@@ -13,4 +13,5 @@ alfie\controller\AttendanceManager.class
 alfie\view\LogsPanel.class
 alfie\view\EmployeeListView$1.class
 alfie\view\EmployeeDetailView.class
+alfie\util\FilePathManager.class
 alfie\view\EmployeeListView.class

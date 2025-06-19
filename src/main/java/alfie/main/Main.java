@@ -5,23 +5,35 @@
 package alfie.main;
 
 import javax.swing.*;
-import alfie.view.MainMenu; //Import custom MainMenu class located in the alfie.view package.
 
 /**
  *
  * @author Alfie
  */
+
+import alfie.view.MainMenu;                 // Import the custom GUI class
+import alfie.util.FilePathManager;         // Import your centralized file path manager
+
+/**
+ * Entry point of the MotorPHCP2 application.
+ * Initializes the file path manager and launches the GUI.
+ */
 public class Main {
     public static void main(String[] args) {
         
-    /*
-     * Using lambda epression for shorter runnable contains code to:
-     * 1. Create new instance to mainmenu
-     * 2. Make the window visible using .setVisible(true);
-     */
-       SwingUtilities.invokeLater(() -> {       // Ensures GUI runs safely on the Event Dispatch Thread
-           MainMenu mainMenu = new MainMenu();  // Initializes the main window
-           mainMenu.setVisible(true);
-       });
-    } 
+        /*
+         * Ensures GUI runs on the Event Dispatch Thread.
+         * This prevents threading issues with Swing components.
+         */
+        SwingUtilities.invokeLater(() -> {
+
+            // ✅ Initialize FilePathManager ONCE before any other file operation occurs
+            new FilePathManager("C:/Users/Alfie/Documents/NetBeansProjects/MotorPHCP2");
+
+            // ✅ Create and show the main window
+            MainMenu mainMenu = new MainMenu();
+            mainMenu.setVisible(true);
+        });
+    }
 }
+
