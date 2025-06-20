@@ -4,6 +4,20 @@
  */
 package alfie.view;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose:
+ *  1.  Interface to view all list of employee using JFrame on top of JDialog.
+ *  2.  Added button to view the detailed information
+ *          of employee via EmployeeDetailView class using JDialog.
+ *  3.  Added button to add new employee via NewEmployeeForm class using JDialog.
+ *  4.  Added search bar for quick search to specific employee.
+ *  5.  Added refresh button to provide the updated data every time.
+ * 
+ */
+
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 import alfie.util.AttendanceFileHandler;

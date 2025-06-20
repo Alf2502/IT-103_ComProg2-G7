@@ -3,17 +3,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-/**
- *
- * @author Alfie
- */
-
 package alfie.view;
+
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose:
+ *  1.  User interface to view a detailed employee details.
+ *  2.  Added button to view the monthly salary of employee using JDialog.
+ *  3.  JOptionPane prompt to select the month.
+ *  4.  After selecting the month view the monthly salary of employee
+ *          via SalaryReportView class using JDialog.
+ * 
+ */
 
 import alfie.model.Employee;
 import alfie.util.AttendanceFileHandler;
 import alfie.util.SalaryCalculator;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -111,11 +118,11 @@ public class EmployeeDetailView extends JDialog {
         panel.add(new JLabel(value));
     }
     private String getMonthName(String monthNumber) {
-    String[] months = {
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    };
-    int index = Integer.parseInt(monthNumber) - 1;
-    return (index >= 0 && index < 12) ? months[index] : "Unknown";
-}
+        String[] months = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        int index = Integer.parseInt(monthNumber) - 1;
+        return (index >= 0 && index < 12) ? months[index] : "Unknown";
+    }
 }

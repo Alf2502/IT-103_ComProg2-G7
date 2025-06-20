@@ -4,6 +4,14 @@
  */
 package alfie.util;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Utility to handle employee details, read and save.
+ * 
+ */
+
 import alfie.model.Employee;
 import java.io.*;
 import java.util.*;

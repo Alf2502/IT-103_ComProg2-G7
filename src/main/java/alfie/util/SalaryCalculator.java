@@ -10,6 +10,14 @@
  */
 package alfie.util;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Utility class to calculate salary-related values such as total hours worked.
+ * 
+ */
+
 import alfie.model.AttendanceRecord;
 import alfie.model.Employee;
 import java.time.*;
@@ -17,9 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-/**
- * Utility class to calculate salary-related values such as total hours worked.
- */
 public class SalaryCalculator {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");

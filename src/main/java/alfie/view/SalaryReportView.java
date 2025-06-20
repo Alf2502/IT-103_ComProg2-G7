@@ -9,8 +9,11 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- *
- * @author Alfie
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Interface to view the monthly salary of employee.
+ * 
  */
 
 public class SalaryReportView {

@@ -5,6 +5,15 @@
 
 package alfie.model;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Model class (General use) with getter and setter.
+ *  Note: No argument constructor.
+ * 
+ */
+
 public class Employee {
 
     private String employeeNumber;
@@ -27,7 +36,6 @@ public class Employee {
     private Double grossRate;
     private Double hourlyRate;
 
-    // No-argument constructor
     public Employee() {
     }
 

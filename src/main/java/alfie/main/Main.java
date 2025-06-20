@@ -4,20 +4,20 @@
  */
 package alfie.main;
 
-import javax.swing.*;
-
-/**
- *
- * @author Alfie
- */
-
-import alfie.view.MainMenu;                 // Import the custom GUI class
-import alfie.util.FilePathManager;         // Import centralized file path manager
-
 /**
  * Entry point of the MotorPHCP2 application.
  * Initializes the file path manager and launches the GUI.
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR01-Feature 1
+ * Purpose: GUI based application
+ * 
  */
+
+import javax.swing.*;
+import alfie.view.MainMenu;                 // Import the custom GUI class
+import alfie.util.FilePathManager;         // Import centralized file path manager
+
 public class Main {
     public static void main(String[] args) {
         

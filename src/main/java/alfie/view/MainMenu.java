@@ -3,19 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+package alfie.view;
 
 /**
- *
- * @author Alfie
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR01-Feature 1
+ * Purpose: Parent GUI (Home screen of the application)
+ * 
  */
-
-package alfie.view;
 
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
-
 
 public class MainMenu extends JFrame {
     

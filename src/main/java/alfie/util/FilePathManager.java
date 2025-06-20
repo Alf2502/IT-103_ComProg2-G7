@@ -4,20 +4,16 @@
  */
 package alfie.util;
 
-/**
- *
- * @author Alfie
- */
-
 import java.io.File;
 
 /**
- * Handles centralized file path management for the MotorPHCP2 application.
- *
- * Example usage:
- * FilePathManager manager = new FilePathManager("C:/Users/Alfie/Documents/NetBeansProjects/MotorPHCP2");
- * String attendancePath = manager.getAttendanceFilePath();
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Utility class that manage the CSV file.
+ * 
  */
+
 public class FilePathManager {
 
     private static FilePathManager instance;

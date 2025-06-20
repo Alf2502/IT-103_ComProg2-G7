@@ -3,12 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-/**
- *
- * @author Alfie
- */
-
 package alfie.util;
+
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Utility class to handle the attendance record.
+ */
 
 import alfie.model.AttendanceRecord;
 

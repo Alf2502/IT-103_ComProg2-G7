@@ -3,12 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+package alfie.model;
 
 /**
- *
- * @author Alfie
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose: Model class for constructor and getter to use in:
+ *      1.  AttendanceFileHnadler class
+ *      2.  SalaryCalculator class
+ * 
  */
-package alfie.model;
 
 public class AttendanceRecord {
     

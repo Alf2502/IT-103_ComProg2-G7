@@ -6,8 +6,14 @@
 package alfie.view;
 
 /**
- *
- * @author Alfie
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR02-Feature 2
+ * Purpose:
+ *  1.  Interface to add new employee using JDialog.
+ *  2.  Added button to add new employee to CSV file.
+ *  3.  Note: This class also handles the automatic generation of employee number.
+ * 
  */
 
 import alfie.model.Employee;
