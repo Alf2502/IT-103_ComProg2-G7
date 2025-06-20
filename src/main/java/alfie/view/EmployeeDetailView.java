@@ -42,13 +42,12 @@ public class EmployeeDetailView extends JDialog {
         addLabel(contentPanel, "Pag-IBIG Number:", emp.getPagIbigNumber());
         addLabel(contentPanel, "Status:", emp.getStatus());
         addLabel(contentPanel, "Position:", emp.getPosition());
-        addLabel(contentPanel, "Immediate Supervisor:", emp.getImmidiateSupervision());
-        addLabel(contentPanel, "Basic Salary:", emp.getBasicSalary());
-        addLabel(contentPanel, "Rice Subsidy:", emp.getRiceSubsidy());
-        addLabel(contentPanel, "Phone Allowance:", emp.getPhoneAllowance());
-        addLabel(contentPanel, "Clothing Allowance:", emp.getClothingAllowance());
-        addLabel(contentPanel, "Gross Semi-monthly Rate:", emp.getGrossRate());
-        addLabel(contentPanel, "Hourly Rate:", emp.getHourlyRate());
+        addLabel(contentPanel, "Basic Salary:", String.format("%.2f", emp.getBasicSalary()));
+        addLabel(contentPanel, "Rice Subsidy:", String.format("%.2f", emp.getRiceSubsidy()));
+        addLabel(contentPanel, "Phone Allowance:", String.format("%.2f", emp.getPhoneAllowance()));
+        addLabel(contentPanel, "Clothing Allowance:", String.format("%.2f", emp.getClothingAllowance()));
+        addLabel(contentPanel, "Gross Semi-monthly Rate:", String.format("%.2f", emp.getGrossRate()));
+        addLabel(contentPanel, "Hourly Rate:", String.format("%.2f", emp.getHourlyRate()));
 
         // Buttons
         JButton closeButton = new JButton("Close");
@@ -94,52 +93,17 @@ public class EmployeeDetailView extends JDialog {
     }
 
     private void showMonthlySalary(Employee emp, String monthNumber) {
-        try {
-            // Calculate total worked hours for the month
-            double totalHours = SalaryCalculator.calculateMonthlyHours(
-                emp.getEmployeeNumber(), monthNumber, attendanceFileHandler
-            );
+    try {
+        double totalHours = SalaryCalculator.calculateMonthlyHours(
+                emp.getEmployeeNumber(), monthNumber, attendanceFileHandler);
+        
+        double salary = SalaryCalculator.calculateSalary(emp, totalHours);
 
-            double hourlyRate = Double.parseDouble(emp.getHourlyRate());
-            double salary = totalHours * hourlyRate;
-
-            // Parse additional allowances
-            double basic = parseAmount(emp.getBasicSalary());
-            double rice = parseAmount(emp.getRiceSubsidy());
-            double phone = parseAmount(emp.getPhoneAllowance());
-            double clothing = parseAmount(emp.getClothingAllowance());
-
-            double total = basic + rice + phone + clothing;
-
-            // Display result
-            String message = String.format(
-                "<html><b>%s %s</b><br><br>"
-                + "Total Hours Worked: %.2f hrs<br>"
-                + "Hourly Rate: ₱%.2f<br><br>"
-                + "Basic Salary: ₱%.2f<br>"
-                + "Rice Subsidy: ₱%.2f<br>"
-                + "Phone Allowance: ₱%.2f<br>"
-                + "Clothing Allowance: ₱%.2f<br><br>"
-                + "<b>Total Monthly Salary (Hours × Rate): ₱%.2f</b></html>",
-                emp.getFirstName(), emp.getLastName(),
-                totalHours, hourlyRate,
-                basic, rice, phone, clothing,
-                salary
-            );
-
-            JOptionPane.showMessageDialog(this, message, "Monthly Salary", JOptionPane.INFORMATION_MESSAGE);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error calculating salary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        SalaryReportView.show(emp, totalHours, salary);
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Error calculating salary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
-
-    private double parseAmount(String value) {
-        try {
-            return Double.parseDouble(value.replaceAll("[^\\d.]", ""));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
+}
 
     private void addLabel(JPanel panel, String label, String value) {
         panel.add(new JLabel(label));

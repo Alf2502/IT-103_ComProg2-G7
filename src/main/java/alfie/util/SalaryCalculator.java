@@ -11,7 +11,7 @@
 package alfie.util;
 
 import alfie.model.AttendanceRecord;
-
+import alfie.model.Employee;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -32,6 +32,7 @@ public class SalaryCalculator {
      * @param handler        The attendance file handler instance
      * @return Total hours worked in the given month
      */
+    
     public static double calculateMonthlyHours(String employeeNumber, String monthTwoDigit, AttendanceFileHandler handler) {
         double totalHours = 0.0;
 
@@ -61,4 +62,16 @@ public class SalaryCalculator {
 
         return totalHours;
     }
+    
+    public static double calculateSalary(Employee emp, double totalHours) {
+        return totalHours* emp.getHourlyRate();
+    }
+
+    public static double calculateTotalWithAllowances(Employee emp) {
+        return emp.getBasicSalary()
+             + emp.getRiceSubsidy()
+             + emp.getPhoneAllowance()
+             + emp.getClothingAllowance();
+    }
 }
+
