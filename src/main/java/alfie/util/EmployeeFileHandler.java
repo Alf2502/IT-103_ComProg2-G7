@@ -47,4 +47,40 @@ public class EmployeeFileHandler {
 
         return employeeList;
     }
+    
+    public boolean saveEmployee(Employee emp) {
+    String filePath = FilePathManager.getInstance().getEmployeeFilePath();
+
+    try (FileWriter writer = new FileWriter(filePath, true)) {
+        writer.write(String.join(",",
+            emp.getEmployeeNumber(),
+            emp.getLastName(),
+            emp.getFirstName(),
+            emp.getBirthDay(),
+            emp.getAddress(),
+            emp.getPhoneNumber(),
+            emp.getSssNumber(),
+            emp.getPhilHealthNumber(),
+            emp.getTin(),
+            emp.getPagIbigNumber(),
+            emp.getStatus(),
+            emp.getPosition(),
+            emp.getImmediateSupervision(),
+            String.format("%.2f", emp.getBasicSalary()),
+            String.format("%.2f", emp.getRiceSubsidy()),
+            String.format("%.2f", emp.getPhoneAllowance()),
+            String.format("%.2f", emp.getClothingAllowance()),
+            String.format("%.2f", emp.getGrossRate()),
+            String.format("%.2f", emp.getHourlyRate())
+        ));
+        writer.write("\n");
+        return true;
+
+    } catch (IOException e) {
+        System.err.println("Error saving employee: " + e.getMessage());
+        return false;
+    }
+}
+
+
 }

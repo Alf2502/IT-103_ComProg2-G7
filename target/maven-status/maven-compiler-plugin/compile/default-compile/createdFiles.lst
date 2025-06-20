@@ -1,3 +1,4 @@
+alfie\view\NewEmployeeForm.class
 alfie\view\EmployeeForm.class
 alfie\view\MainMenu.class
 alfie\util\SalaryCalculator.class
@@ -8,7 +9,6 @@ alfie\main\Main.class
 alfie\model\Employee.class
 alfie\view\SalaryReportView.class
 alfie\view\EmployeeListView$2.class
-alfie\controller\AttendanceManager.class
 alfie\view\EmployeeListView$1.class
 alfie\view\EmployeeDetailView.class
 alfie\util\FilePathManager.class

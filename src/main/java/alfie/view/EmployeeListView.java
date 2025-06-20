@@ -23,7 +23,7 @@ public class EmployeeListView extends JDialog {
 
     public EmployeeListView(JFrame parent) {
         super(parent, "Employee List", true);
-        setSize(900, 500);
+        setSize(860, 660);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -52,14 +52,25 @@ public class EmployeeListView extends JDialog {
 
         JScrollPane scrollPane = new JScrollPane(employeeTable);
         add(scrollPane, BorderLayout.CENTER);
-
+        
         // View Details Button
         JButton viewDetailsButton = new JButton("View Details");
         viewDetailsButton.setEnabled(false);
         viewDetailsButton.addActionListener(e -> showEmployeeDetails());
 
+        JButton newEmployeeButton = new JButton("Add new employee");
+        newEmployeeButton.addActionListener(e -> {
+            NewEmployeeForm form = new NewEmployeeForm(
+            (JFrame) SwingUtilities.getWindowAncestor(this),
+            new EmployeeFileHandler(),
+                    this::loadEmployeeData
+            );
+            form.setVisible(true);
+        });
+        
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.add(viewDetailsButton);
+        bottomPanel.add(newEmployeeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
         // Enable button when row is selected

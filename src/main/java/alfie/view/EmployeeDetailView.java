@@ -65,7 +65,7 @@ public class EmployeeDetailView extends JDialog {
         add(contentPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        setSize(800, 600);
+        setSize(820, 620);
         setLocationRelativeTo(parent);
     }
 
@@ -93,20 +93,29 @@ public class EmployeeDetailView extends JDialog {
     }
 
     private void showMonthlySalary(Employee emp, String monthNumber) {
-    try {
-        double totalHours = SalaryCalculator.calculateMonthlyHours(
+        try {
+            double totalHours = SalaryCalculator.calculateMonthlyHours(
                 emp.getEmployeeNumber(), monthNumber, attendanceFileHandler);
         
-        double salary = SalaryCalculator.calculateSalary(emp, totalHours);
+            double salary = SalaryCalculator.calculateSalary(emp, totalHours);
 
-        SalaryReportView.show(emp, totalHours, salary);
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Error calculating salary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            String monthName = getMonthName(monthNumber);
+            SalaryReportView.show(emp, totalHours, salary, monthName);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Error calculating salary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
 
     private void addLabel(JPanel panel, String label, String value) {
         panel.add(new JLabel(label));
         panel.add(new JLabel(value));
     }
+    private String getMonthName(String monthNumber) {
+    String[] months = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+    int index = Integer.parseInt(monthNumber) - 1;
+    return (index >= 0 && index < 12) ? months[index] : "Unknown";
+}
 }
