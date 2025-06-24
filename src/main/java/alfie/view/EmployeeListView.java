@@ -21,6 +21,7 @@ package alfie.view;
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 import alfie.util.AttendanceFileHandler;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -35,22 +36,26 @@ public class EmployeeListView extends JDialog {
     private final TableRowSorter<DefaultTableModel> sorter;
     private final JTextField searchField;
 
-    public EmployeeListView(JFrame parent) {
+    private final JButton editEmployeeButton;
+    private final JButton viewDetailsButton;
+    private final JButton deleteEmployeeButton;
+    private final JButton newEmployeeButton;
+
+    private boolean loggedIn;
+
+    public EmployeeListView(JFrame parent, boolean isLoggedIn) {
         super(parent, "Employee List", true);
+        this.loggedIn = isLoggedIn;
+
         setSize(860, 660);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        // Table headers
+        // Table setup
         String[] columnNames = {
-            "Employee Number",
-            "Last Name",
-            "First Name",
-            "SSS Number",
-            "PhilHealth Number",
-            "TIN",
-            "Pag-IBIG Number"
+            "Employee Number", "Last Name", "First Name",
+            "SSS Number", "PhilHealth Number", "TIN", "Pag-IBIG Number"
         };
 
         tableModel = new DefaultTableModel(columnNames, 0) {
@@ -63,36 +68,31 @@ public class EmployeeListView extends JDialog {
         employeeTable = new JTable(tableModel);
         sorter = new TableRowSorter<>(tableModel);
         employeeTable.setRowSorter(sorter);
-
         JScrollPane scrollPane = new JScrollPane(employeeTable);
         add(scrollPane, BorderLayout.CENTER);
-        
-        // View Details Button
-        JButton viewDetailsButton = new JButton("View Details");
-        viewDetailsButton.setEnabled(false);
-        viewDetailsButton.addActionListener(e -> showEmployeeDetails());
 
-        JButton newEmployeeButton = new JButton("Add new employee");
+        // Initialize buttons
+        viewDetailsButton = new JButton("View Details");
+        editEmployeeButton = new JButton("Edit Employee");
+        deleteEmployeeButton = new JButton("Delete Employee");
+        newEmployeeButton = new JButton("Add New Employee");
+
+        viewDetailsButton.addActionListener(e -> showEmployeeDetails());
+        editEmployeeButton.addActionListener(e -> editSelectedEmployee());
+        deleteEmployeeButton.addActionListener(e -> deleteSelectedEmployee());
         newEmployeeButton.addActionListener(e -> {
-            NewEmployeeForm form = new NewEmployeeForm(
-            (JFrame) SwingUtilities.getWindowAncestor(this),
-            new EmployeeFileHandler(),
-                    this::loadEmployeeData
-            );
+            NewEmployeeForm form = new NewEmployeeForm((JFrame) SwingUtilities.getWindowAncestor(this), new EmployeeFileHandler(), this::loadEmployeeData);
             form.setVisible(true);
         });
-        
+
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.add(viewDetailsButton);
+        bottomPanel.add(editEmployeeButton);
         bottomPanel.add(newEmployeeButton);
+        bottomPanel.add(deleteEmployeeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Enable button when row is selected
-        employeeTable.getSelectionModel().addListSelectionListener(e -> {
-            viewDetailsButton.setEnabled(employeeTable.getSelectedRow() != -1);
-        });
-
-        // Top: Search & Refresh
+        // Top panel (Search + Refresh)
         JPanel topPanel = new JPanel(new BorderLayout(5, 5));
         searchField = new JTextField();
         JButton refreshButton = new JButton("Refresh");
@@ -102,77 +102,93 @@ public class EmployeeListView extends JDialog {
         topPanel.add(refreshButton, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
 
-        // Load Data
-        loadEmployeeData();
-
-        // Search filter logic
         searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) { search(); }
-            @Override
-            public void removeUpdate(DocumentEvent e) { search(); }
-            @Override
-            public void changedUpdate(DocumentEvent e) { search(); }
+            @Override public void insertUpdate(DocumentEvent e) { search(); }
+            @Override public void removeUpdate(DocumentEvent e) { search(); }
+            @Override public void changedUpdate(DocumentEvent e) { search(); }
 
             private void search() {
-                String text = searchField.getText();
-                sorter.setRowFilter(text.trim().isEmpty() ? null : RowFilter.regexFilter("(?i)" + text));
+                String text = searchField.getText().trim();
+                sorter.setRowFilter(text.isEmpty() ? null : RowFilter.regexFilter("(?i)" + text));
             }
         });
 
-        // Refresh reloads employee table
         refreshButton.addActionListener(e -> loadEmployeeData());
+
+        employeeTable.getSelectionModel().addListSelectionListener(e -> updateButtonStates());
+
+        loadEmployeeData();
+        setProtectedButtonsEnabled(loggedIn); // Initial state based on login
+    }
+
+    public void setProtectedButtonsEnabled(boolean enable) {
+        this.loggedIn = enable;
+        updateButtonStates();
+    }
+
+    private void updateButtonStates() {
+        boolean selected = employeeTable.getSelectedRow() != -1;
+        viewDetailsButton.setEnabled(loggedIn && selected);
+        editEmployeeButton.setEnabled(loggedIn && selected);
+        deleteEmployeeButton.setEnabled(loggedIn && selected);
+        newEmployeeButton.setEnabled(loggedIn);
     }
 
     private void showEmployeeDetails() {
+        Employee emp = getSelectedEmployee();
+        if (emp != null) {
+            AttendanceFileHandler handler = new AttendanceFileHandler();
+            new EmployeeDetailView((JFrame) SwingUtilities.getWindowAncestor(this), emp, handler).setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Employee details not found.");
+        }
+    }
+
+    private void editSelectedEmployee() {
+        Employee emp = getSelectedEmployee();
+        if (emp != null) {
+            new EditEmployeeForm((JFrame) SwingUtilities.getWindowAncestor(this), emp, new EmployeeFileHandler(), this::loadEmployeeData).setVisible(true);
+        }
+    }
+
+    private void deleteSelectedEmployee() {
         int selectedRow = employeeTable.getSelectedRow();
         if (selectedRow == -1) return;
 
         int modelRow = employeeTable.convertRowIndexToModel(selectedRow);
         String empNumber = (String) tableModel.getValueAt(modelRow, 0);
 
-        EmployeeFileHandler fileHandler = new EmployeeFileHandler();
-        List<Employee> employees = fileHandler.readEmployees();
-
-        Employee selectedEmp = null;
-        for (Employee emp : employees) {
-            if (emp.getEmployeeNumber().equals(empNumber)) {
-                selectedEmp = emp;
-                break;
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete Employee #" + empNumber + "?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = new EmployeeFileHandler().deleteEmployeeByNumber(empNumber);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Employee deleted.");
+                loadEmployeeData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete employee.");
             }
-        }
-
-        if (selectedEmp != null) {
-            AttendanceFileHandler handler = new AttendanceFileHandler();
-
-            EmployeeDetailView dialog = new EmployeeDetailView(
-                (JFrame) SwingUtilities.getWindowAncestor(this),
-                selectedEmp,
-                handler
-            );
-            dialog.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Employee details not found.");
         }
     }
 
+    private Employee getSelectedEmployee() {
+        int selectedRow = employeeTable.getSelectedRow();
+        if (selectedRow == -1) return null;
+
+        String empNumber = (String) tableModel.getValueAt(employeeTable.convertRowIndexToModel(selectedRow), 0);
+        return new EmployeeFileHandler().readEmployees().stream()
+                .filter(e -> e.getEmployeeNumber().equals(empNumber))
+                .findFirst()
+                .orElse(null);
+    }
 
     private void loadEmployeeData() {
         tableModel.setRowCount(0);
-        EmployeeFileHandler fileHandler = new EmployeeFileHandler();
-        List<Employee> employees = fileHandler.readEmployees();
-
+        List<Employee> employees = new EmployeeFileHandler().readEmployees();
         for (Employee emp : employees) {
-            Object[] row = {
-                emp.getEmployeeNumber(),
-                emp.getLastName(),
-                emp.getFirstName(),
-                emp.getSssNumber(),
-                emp.getPhilHealthNumber(),
-                emp.getTin(),
-                emp.getPagIbigNumber()
-            };
-            tableModel.addRow(row);
+            tableModel.addRow(new Object[]{
+                emp.getEmployeeNumber(), emp.getLastName(), emp.getFirstName(),
+                emp.getSssNumber(), emp.getPhilHealthNumber(), emp.getTin(), emp.getPagIbigNumber()
+            });
         }
     }
 }

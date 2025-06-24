@@ -73,6 +73,16 @@ public class Employee {
             return 0.0;
         }
     }
+    public String toCSV() {
+        return String.join(",",
+            employeeNumber, lastName, firstName, birthDate, address, phoneNumber,
+            sssNumber, philHealthNumber, tin, pagIbigNumber, status, position,
+            immediateSupervision,
+            String.valueOf(basicSalary), String.valueOf(riceSubsidy),
+            String.valueOf(phoneAllowance), String.valueOf(clothingAllowance),
+            String.valueOf(grossRate), String.valueOf(hourlyRate)
+        );
+    }
 
     // Getters
     public String getEmployeeNumber() { return employeeNumber; }

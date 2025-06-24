@@ -63,7 +63,7 @@ public class EmployeeDetailView extends JDialog {
         JButton viewSalaryButton = new JButton("View Salary");
         viewSalaryButton.addActionListener(e -> promptSalaryMonthAndCalculate(emp));
 
-        // Button panel
+        // Button panel add here to set visible
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(viewSalaryButton);
         buttonPanel.add(closeButton);

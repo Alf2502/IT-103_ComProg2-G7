@@ -38,6 +38,10 @@ public class FilePathManager {
     public String getEmployeeFilePath() {
         return baseDirectory + File.separator + "MotorPH Employee Details.csv";
     }
+    
+    public String getAdminFilePath() {
+        return baseDirectory + File.separator + "admin.csv";
+    }
 
     public boolean fileExists(String filePath) {
         File file = new File(filePath);

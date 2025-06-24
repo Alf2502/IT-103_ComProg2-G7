@@ -57,38 +57,111 @@ public class EmployeeFileHandler {
     }
     
     public boolean saveEmployee(Employee emp) {
-    String filePath = FilePathManager.getInstance().getEmployeeFilePath();
+        String filePath = FilePathManager.getInstance().getEmployeeFilePath();
 
-    try (FileWriter writer = new FileWriter(filePath, true)) {
-        writer.write(String.join(",",
-            emp.getEmployeeNumber(),
-            emp.getLastName(),
-            emp.getFirstName(),
-            emp.getBirthDay(),
-            emp.getAddress(),
-            emp.getPhoneNumber(),
-            emp.getSssNumber(),
-            emp.getPhilHealthNumber(),
-            emp.getTin(),
-            emp.getPagIbigNumber(),
-            emp.getStatus(),
-            emp.getPosition(),
-            emp.getImmediateSupervision(),
-            String.format("%.2f", emp.getBasicSalary()),
-            String.format("%.2f", emp.getRiceSubsidy()),
-            String.format("%.2f", emp.getPhoneAllowance()),
-            String.format("%.2f", emp.getClothingAllowance()),
-            String.format("%.2f", emp.getGrossRate()),
-            String.format("%.2f", emp.getHourlyRate())
-        ));
-        writer.write("\n");
-        return true;
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            writer.write(String.join(",",
+                emp.getEmployeeNumber(),
+                emp.getLastName(),
+                emp.getFirstName(),
+                emp.getBirthDay(),
+                emp.getAddress(),
+                emp.getPhoneNumber(),
+                emp.getSssNumber(),
+                emp.getPhilHealthNumber(),
+                emp.getTin(),
+                emp.getPagIbigNumber(),
+                emp.getStatus(),
+                emp.getPosition(),
+                emp.getImmediateSupervision(),
+                String.format("%.2f", emp.getBasicSalary()),
+                String.format("%.2f", emp.getRiceSubsidy()),
+                String.format("%.2f", emp.getPhoneAllowance()),
+                String.format("%.2f", emp.getClothingAllowance()),
+                String.format("%.2f", emp.getGrossRate()),
+                String.format("%.2f", emp.getHourlyRate())
+            ));
+            writer.write("\n");
+            return true;
 
-    } catch (IOException e) {
-        System.err.println("Error saving employee: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error saving employee: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean updateEmployee(Employee updatedEmp) {
+        List<Employee> employees = readEmployees();
+        boolean found = false;
+
+        for (int i = 0; i < employees.size(); i++) {
+            if (employees.get(i).getEmployeeNumber().equals(updatedEmp.getEmployeeNumber())) {
+                employees.set(i, updatedEmp);  // Replace with updated employee
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            return false; // Employee not found
+        }
+
+    // Rewrite the CSV file with updated list
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(employeeFilePath))) {
+            writer.write("Employee Number,Last Name,First Name,Birth Date,Address,Phone Number,SSS Number,PhilHealth Number,TIN,Pag-IBIG Number,Status,Position,Immediate Supervision,Basic Salary,Rice Subsidy,Phone Allowance,Clothing Allowance,Gross Rate,Hourly Rate");
+            writer.newLine();
+
+            for (Employee emp : employees) {
+                writer.write(String.join(",",
+                    emp.getEmployeeNumber(),
+                    emp.getLastName(),
+                    emp.getFirstName(),
+                    emp.getBirthDay(),
+                    emp.getAddress(),
+                    emp.getPhoneNumber(),
+                    emp.getSssNumber(),
+                    emp.getPhilHealthNumber(),
+                    emp.getTin(),
+                    emp.getPagIbigNumber(),
+                    emp.getStatus(),
+                    emp.getPosition(),
+                    emp.getImmediateSupervision(),
+                    String.valueOf(emp.getBasicSalary()),
+                    String.valueOf(emp.getRiceSubsidy()),
+                    String.valueOf(emp.getPhoneAllowance()),
+                    String.valueOf(emp.getClothingAllowance()),
+                    String.valueOf(emp.getGrossRate()),
+                    String.valueOf(emp.getHourlyRate())
+                ));
+                writer.newLine();
+            }
+
+            return true;
+
+        } catch (IOException e) {
+            System.err.println("Error updating employee file: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean deleteEmployeeByNumber(String empNumber) {
+        List<Employee> employees = readEmployees();
+        boolean removed = employees.removeIf(emp -> emp.getEmployeeNumber().equals(empNumber));
+        if (removed) {
+            return saveAllEmployees(employees); // overwrite file
+        }
         return false;
     }
+
+    public boolean saveAllEmployees(List<Employee> employees) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("C:\\Users\\Alfie\\Documents\\NetBeansProjects\\MotorPHCP2\\MotorPH Employee Details.csv"))) {
+            for (Employee emp : employees) {
+                writer.println(emp.toCSV());
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
 }
 
-
-}
