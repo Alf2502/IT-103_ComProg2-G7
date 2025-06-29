@@ -4,6 +4,15 @@
  */
 package alfie.view;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR04-Feature 4
+ * Purpose:
+ *  1.  User interface for adding a new admin
+ * 
+ */
+
 import alfie.util.FilePathManager;
 import alfie.util.SHA256Hasher;
 

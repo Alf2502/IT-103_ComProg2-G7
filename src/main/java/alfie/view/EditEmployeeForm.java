@@ -4,6 +4,16 @@
  */
 package alfie.view;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR03-Feature 3
+ * Purpose:
+ *  1.  User interface to update/edit employee details.
+ *  2.  Added save button to update/edit employee interface.
+ * 
+ */
+
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 

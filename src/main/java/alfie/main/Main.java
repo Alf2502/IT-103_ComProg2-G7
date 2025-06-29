@@ -23,11 +23,11 @@ public class Main {
         
         /*
          * Ensures GUI runs on the Event Dispatch Thread.
-         * This prevents threading issues with Swing components.
+         * Prevents threading issues with Swing components.
          */
         SwingUtilities.invokeLater(() -> {
 
-            //  Initialize FilePathManager ONCE before any other file operation occurs
+            //  Initialize FilePathManager ONCE before any other file operation occurs.
             new FilePathManager("C:/Users/Alfie/Documents/NetBeansProjects/MotorPHCP2");
 
             //  Create and show the main window

@@ -5,6 +5,15 @@
 
 package alfie.view;
 
+/**
+ * 
+ * Part of MotorPH Change Requests
+ * Change request form: MPHCR03-Feature 3
+ * Purpose:
+ *  1.  User interface for admin log-in.
+ * 
+ */
+
 import alfie.util.PasswordAuthenticator;
 
 import javax.swing.*;
