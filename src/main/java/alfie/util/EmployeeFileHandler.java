@@ -144,13 +144,45 @@ public class EmployeeFileHandler {
     }
     
     public boolean deleteEmployeeByNumber(String empNumber) {
-        List<Employee> employees = readEmployees();
-        boolean removed = employees.removeIf(emp -> emp.getEmployeeNumber().equals(empNumber));
-        if (removed) {
-            return saveAllEmployees(employees); // overwrite file
+        File inputFile = new File(FilePathManager.getInstance().getEmployeeFilePath());
+        File tempFile = new File("temp_employees.csv");
+
+        boolean deleted = false;
+
+        try (
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))
+        ) {
+            String header = reader.readLine();
+            if (header != null) {
+                writer.write(header);
+                writer.newLine();
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",", -1);
+                if (parts.length > 0 && parts[0].trim().equals(empNumber)) {
+                    deleted = true;
+                    continue;
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            return false;
         }
-        return false;
+
+        // Replace original file with temp
+        if (deleted && inputFile.delete()) {
+            return tempFile.renameTo(inputFile);
+        } else {
+            tempFile.delete(); // cleanup
+            return false;
+        }
     }
+
 
     public boolean saveAllEmployees(List<Employee> employees) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("C:\\Users\\Alfie\\Documents\\NetBeansProjects\\MotorPHCP2\\MotorPH Employee Details.csv"))) {

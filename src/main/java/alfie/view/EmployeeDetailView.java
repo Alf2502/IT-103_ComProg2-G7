@@ -60,12 +60,8 @@ public class EmployeeDetailView extends JDialog {
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> dispose());
 
-        JButton viewSalaryButton = new JButton("View Salary");
-        viewSalaryButton.addActionListener(e -> promptSalaryMonthAndCalculate(emp));
-
         // Button panel add here to set visible
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(viewSalaryButton);
         buttonPanel.add(closeButton);
 
         // Assemble dialog
@@ -76,53 +72,8 @@ public class EmployeeDetailView extends JDialog {
         setLocationRelativeTo(parent);
     }
 
-    private void promptSalaryMonthAndCalculate(Employee emp) {
-        String[] months = {
-            "01 - January", "02 - February", "03 - March", "04 - April",
-            "05 - May", "06 - June", "07 - July", "08 - August",
-            "09 - September", "10 - October", "11 - November", "12 - December"
-        };
-
-        String selected = (String) JOptionPane.showInputDialog(
-            this,
-            "Select month to calculate salary:",
-            "Month Selection",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            months,
-            months[0]
-        );
-
-        if (selected != null) {
-            String monthNumber = selected.split(" ")[0]; // Extract "01" from "01 - January"
-            showMonthlySalary(emp, monthNumber);
-        }
-    }
-
-    private void showMonthlySalary(Employee emp, String monthNumber) {
-        try {
-            double totalHours = SalaryCalculator.calculateMonthlyHours(
-                emp.getEmployeeNumber(), monthNumber, attendanceFileHandler);
-        
-            double salary = SalaryCalculator.calculateSalary(emp, totalHours);
-
-            String monthName = getMonthName(monthNumber);
-            SalaryReportView.show(emp, totalHours, salary, monthName);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error calculating salary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void addLabel(JPanel panel, String label, String value) {
         panel.add(new JLabel(label));
         panel.add(new JLabel(value));
-    }
-    private String getMonthName(String monthNumber) {
-        String[] months = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-        int index = Integer.parseInt(monthNumber) - 1;
-        return (index >= 0 && index < 12) ? months[index] : "Unknown";
     }
 }

@@ -19,10 +19,14 @@ package alfie.view;
 import alfie.model.Employee;
 import alfie.util.EmployeeFileHandler;
 import alfie.util.FilePathManager;
+import alfie.util.InputValidator;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class NewEmployeeForm extends JDialog {
 
@@ -76,23 +80,23 @@ public class NewEmployeeForm extends JDialog {
         semiMonthlyField = new JTextField();
         hourlyRateField = new JTextField();
 
-        form.add(new JLabel("First Name:")); form.add(firstNameField);
-        form.add(new JLabel("Last Name:")); form.add(lastNameField);
-        form.add(new JLabel("Birth Date: (MM/DD/YYYY)")); form.add(birthDateField);
-        form.add(new JLabel("Full Address:")); form.add(addressField);
-        form.add(new JLabel("Phone Number: (123-456-789)")); form.add(phoneNumberField);
-        form.add(new JLabel("Social Security Number: (12-1234567-0)")); form.add(sssNumberField);
-        form.add(new JLabel("PhilHealth Number (12 Digit PhilHealth Number):")); form.add(philHealthField);
-        form.add(new JLabel("TIN Number: (123-456-789-000)")); form.add(tinNumberField);
-        form.add(new JLabel("Pag-Ibig Number (12 didgit PagIbig Number):")); form.add(pagIbigNumberField);
-        form.add(new JLabel("Status:")); form.add(statusField);
-        form.add(new JLabel("Position:")); form.add(positionField);
-        form.add(new JLabel("Basic Salary:")); form.add(basicSalaryField);
-        form.add(new JLabel("Rice Subsidy:")); form.add(riceSubsidyField);
-        form.add(new JLabel("Phone Allowance:")); form.add(phoneAllowanceField);
-        form.add(new JLabel("Clothing Allowance:")); form.add(clothingAllowanceField);
-        form.add(new JLabel("Gross Semi-Monthly Rate:")); form.add(semiMonthlyField);
-        form.add(new JLabel("Hourly Rate:")); form.add(hourlyRateField);
+        form.add(createRequiredLabel("First Name :")); form.add(firstNameField);
+        form.add(createRequiredLabel("Last Name :")); form.add(lastNameField);
+        form.add(createRequiredLabel("Birth Date : (MM/DD/YYYY)")); form.add(birthDateField);
+        form.add(createRequiredLabel("Full Address :")); form.add(addressField);
+        form.add(createRequiredLabel("Phone Number :")); form.add(phoneNumberField);
+        form.add(createRequiredLabel("SSS Number :")); form.add(sssNumberField);
+        form.add(createRequiredLabel("PhilHealth Number :")); form.add(philHealthField);
+        form.add(createRequiredLabel("TIN Number :")); form.add(tinNumberField);
+        form.add(createRequiredLabel("Pag-Ibig Number :")); form.add(pagIbigNumberField);
+        form.add(createRequiredLabel("Status :")); form.add(statusField);
+        form.add(createRequiredLabel("Position :")); form.add(positionField);
+        form.add(createRequiredLabel("Basic Salary :")); form.add(basicSalaryField);
+        form.add(createRequiredLabel("Rice Subsidy :")); form.add(riceSubsidyField);
+        form.add(createRequiredLabel("Phone Allowance :")); form.add(phoneAllowanceField);
+        form.add(createRequiredLabel("Clothing Allowance :")); form.add(clothingAllowanceField);
+        form.add(createRequiredLabel("Gross Semi-Monthly Rate :")); form.add(semiMonthlyField);
+        form.add(createRequiredLabel("Hourly Rate :")); form.add(hourlyRateField);
 
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(this::handleSave);
@@ -101,7 +105,36 @@ public class NewEmployeeForm extends JDialog {
         add(saveButton, BorderLayout.SOUTH);
     }
 
+    @SuppressWarnings({"CollectionsToArray", "UnnecessaryReturnStatement"})
     private void handleSave(ActionEvent e) {
+        
+        resetFieldBackgrounds();
+        // Required fields validation
+        Map<String, JTextField> requiredFields = new LinkedHashMap<>();
+        requiredFields.put("First Name", firstNameField);
+        requiredFields.put("Last Name", lastNameField);
+        requiredFields.put("Birth Date", birthDateField);
+        requiredFields.put("Address", addressField);
+        requiredFields.put("Phone Number", phoneNumberField);
+        requiredFields.put("SSS Number", sssNumberField);
+        requiredFields.put("PhilHealth Number", philHealthField);
+        requiredFields.put("TIN Number", tinNumberField);
+        requiredFields.put("Pag-Ibig Number", pagIbigNumberField);
+        requiredFields.put("Status", statusField);
+        requiredFields.put("Position", positionField);
+        requiredFields.put("Basic Salary", basicSalaryField);
+        requiredFields.put("Rice Subsidy", riceSubsidyField);
+        requiredFields.put("Phone Allowance", phoneAllowanceField);
+        requiredFields.put("Clothing Allowance", clothingAllowanceField);
+        requiredFields.put("Gross Semi-Monthly Rate", semiMonthlyField);
+        requiredFields.put("Hourly Rate", hourlyRateField);
+
+        if (!InputValidator.validateRequiredFields(this, requiredFields.values().toArray(new JTextField[0]))) {
+            return;
+        }
+
+
+
         try {
             Employee newEmp = new Employee();
             newEmp.setEmployeeNumber(generateEmployeeNumber());
@@ -115,12 +148,12 @@ public class NewEmployeeForm extends JDialog {
             newEmp.setSssNumber(sssNumberField.getText());
             newEmp.setStatus(statusField.getText());
             newEmp.setPosition(positionField.getText());
-            newEmp.setBasicSalary(Double.valueOf(basicSalaryField.getText()));
-            newEmp.setRiceSubsidy(Double.valueOf(riceSubsidyField.getText()));
-            newEmp.setPhoneAllowance(Double.valueOf(phoneAllowanceField.getText()));
-            newEmp.setClothingAllowance(Double.valueOf(clothingAllowanceField.getText()));
-            newEmp.setGrossRate(Double.valueOf(semiMonthlyField.getText()));
-            newEmp.setHourlyRate(Double.valueOf(hourlyRateField.getText()));
+            newEmp.setBasicSalary(parseFieldAsDouble(basicSalaryField, "Basic Salary"));
+            newEmp.setRiceSubsidy(parseFieldAsDouble(riceSubsidyField, "Rice Subsidy"));
+            newEmp.setPhoneAllowance(parseFieldAsDouble(phoneAllowanceField, "Phone Allowance"));
+            newEmp.setClothingAllowance(parseFieldAsDouble(clothingAllowanceField, "Clothing Allowanc"));
+            newEmp.setGrossRate(parseFieldAsDouble(semiMonthlyField, "Semi-Monthly"));
+            newEmp.setHourlyRate(parseFieldAsDouble(hourlyRateField, "Hourly Rate"));
 
             boolean success = handler.saveEmployee(newEmp);
             if (success) {
@@ -132,7 +165,7 @@ public class NewEmployeeForm extends JDialog {
             }
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }
 
@@ -141,17 +174,14 @@ public class NewEmployeeForm extends JDialog {
         int max = 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            String line;
             reader.readLine(); // skip header
-
+            String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length > 0) {
                     try {
                         int num = Integer.parseInt(parts[0].trim());
-                        if (num > max) {
-                            max = num;
-                        }
+                        max = Math.max(max, num);
                     } catch (NumberFormatException ignored) {}
                 }
             }
@@ -159,7 +189,37 @@ public class NewEmployeeForm extends JDialog {
             System.err.println("Error reading employee file: " + e.getMessage());
         }
 
-        return String.format("%03d", max + 1);  // e.g., 001, 002, 010
+        return String.format("%03d", max + 1);
+    }
+    private double parseFieldAsDouble(JTextField field, String fieldName) {
+        String value = field.getText().trim();
+        try {
+            field.setBackground(Color.WHITE);
+            return Double.parseDouble(value);
+        }   catch (NumberFormatException e) {
+            field.setBackground(new Color(255, 102, 102));
+            JOptionPane.showMessageDialog(
+                this,
+                fieldName + " must be a valid number.",
+                "Invalid Input",
+                JOptionPane.ERROR_MESSAGE
+            );
+            field.requestFocus();
+            throw e;
+        }
+    }
+    private void resetFieldBackgrounds() {
+        JTextField[] allFields = {
+            basicSalaryField, riceSubsidyField, phoneAllowanceField,
+            clothingAllowanceField, semiMonthlyField, hourlyRateField
+        };
+        for (JTextField field : allFields) {
+            field.setBackground(Color.WHITE);
+        }
+    }
+    private JLabel createRequiredLabel(String labelText) {
+        JLabel label = new JLabel("<html>" + labelText + " <font color='red'>*</font></html>");
+        return label;
     }
 
 }

@@ -16,6 +16,7 @@ import alfie.model.AttendanceRecord;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AttendanceFileHandler {
 
@@ -57,17 +58,21 @@ public class AttendanceFileHandler {
     }
 
     // Method to filter by employee number and month
-    public List<AttendanceRecord> getRecordsForEmployee(String empNumber, String month) {
+    public List<AttendanceRecord> getRecordsForEmployee(String employeeNumber, String year, String monthTwoDigit) {
         List<AttendanceRecord> allRecords = readAllRecords();
-        List<AttendanceRecord> filtered = new ArrayList<>();
 
-        for (AttendanceRecord record : allRecords) {
-            if (record.getEmployeeNumber().equals(empNumber) &&
-                record.getDate().startsWith(month)) {
-                filtered.add(record);
-            }
-        }
-
-        return filtered;
+        return allRecords.stream()
+            .filter(r -> r.getEmployeeNumber().equals(employeeNumber))
+            .filter(r -> {
+                String[] parts = r.getDate().split("/");
+                if (parts.length == 3) {
+                    String recordMonth = String.format("%02d", Integer.parseInt(parts[0]));
+                    String recordYear = parts[2];
+                    return recordMonth.equals(monthTwoDigit) && recordYear.equals(year);
+                }
+                return false;
+            })
+            .collect(Collectors.toList());
     }
+
 }

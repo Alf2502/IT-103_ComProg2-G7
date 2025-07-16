@@ -10,6 +10,14 @@
  */
 package alfie.util;
 
+import alfie.model.AttendanceRecord;
+import alfie.model.Employee;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+
 /**
  * 
  * Part of MotorPH Change Requests
@@ -18,65 +26,44 @@ package alfie.util;
  * 
  */
 
-import alfie.model.AttendanceRecord;
-import alfie.model.Employee;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-
 public class SalaryCalculator {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+    private final AttendanceFileHandler handler;
 
-    /**
-     * Calculates the total number of worked hours for an employee for a specific month.
-     *
-     * @param employeeNumber The employee number
-     * @param monthTwoDigit  The two-digit month string (e.g., "06" for June)
-     * @param handler        The attendance file handler instance
-     * @return Total hours worked in the given month
-     */
-    
-    public static double calculateMonthlyHours(String employeeNumber, String monthTwoDigit, AttendanceFileHandler handler) {
+    public SalaryCalculator(AttendanceFileHandler handler) {
+        this.handler = handler;
+    }
+
+    public double calculateMonthlyHours(String employeeNumber, String year, String monthTwoDigit) {
         double totalHours = 0.0;
 
-        List<AttendanceRecord> records = handler.getRecordsForEmployee(employeeNumber, monthTwoDigit);
+        List<AttendanceRecord> records = handler.getRecordsForEmployee(employeeNumber, year, monthTwoDigit);
 
         for (AttendanceRecord record : records) {
-            String logInStr = record.getLogIn();
-            String logOutStr = record.getLogOut();
-
             try {
-                LocalTime logIn = LocalTime.parse(logInStr, TIME_FORMATTER);
-                LocalTime logOut = LocalTime.parse(logOutStr, TIME_FORMATTER);
+                LocalTime logIn = LocalTime.parse(record.getLogIn(), TIME_FORMATTER);
+                LocalTime logOut = LocalTime.parse(record.getLogOut(), TIME_FORMATTER);
 
-                if (logOut.isBefore(logIn)) {
-                    System.err.println("Invalid time range in record (LogOut before LogIn): " + logInStr + " - " + logOutStr);
-                    continue;
-                }
+                if (logOut.isBefore(logIn)) continue;
 
                 Duration duration = Duration.between(logIn, logOut);
-                double hoursWorked = duration.toMinutes() / 60.0;
-
-                totalHours += hoursWorked;
+                totalHours += duration.toMinutes() / 60.0;
             } catch (DateTimeParseException e) {
-                System.err.println("Invalid time format in record: " + logInStr + " or " + logOutStr);
+                System.err.println("Invalid time format: " + e.getMessage());
             }
         }
-
         return totalHours;
     }
-    
-    public static double calculateSalary(Employee emp, double totalHours) {
-        return totalHours* emp.getHourlyRate();
+
+    public double calculateSalary(Employee emp, double totalHours) {
+        return totalHours * emp.getHourlyRate();
     }
 
-    public static double calculateTotalWithAllowances(Employee emp) {
+    public double calculateTotalWithAllowances(Employee emp) {
         return emp.getBasicSalary()
-             + emp.getRiceSubsidy()
-             + emp.getPhoneAllowance()
-             + emp.getClothingAllowance();
+                + emp.getRiceSubsidy()
+                + emp.getPhoneAllowance()
+                + emp.getClothingAllowance();
     }
 }
-
